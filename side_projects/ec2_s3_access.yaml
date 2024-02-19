@@ -1,0 +1,48 @@
+Resources: 
+  EC2Instance: 
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      KeyName: hr-test
+      ImageId: ami-0e731c8a588258d0d
+      SecurityGroups: 
+        - !Ref InstanceSecurityGroup
+      Tags: 
+        - Key: Name # Names the instance
+          Value: testing
+      IamInstanceProfile: !Ref IamProfile
+
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+  IAMRole: 
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - Effect: Allow
+            Principal: 
+              Service: 
+              - ec2.amazonaws.com
+            Action: 
+              - "sts:AssumeRole"
+      Policies:
+      - PolicyName: allow_s3
+        PolicyDocument: 
+          Version: "2012-10-17"
+          Statement: 
+            - Effect: Allow
+              Action: "s3:*"
+              Resource: "*"
+  IamProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles: 
+        - !Ref IAMRole
