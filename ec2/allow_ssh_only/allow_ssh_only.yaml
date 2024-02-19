@@ -1,0 +1,22 @@
+Resources: 
+  EC2Instance: 
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      KeyName: hr-test
+      ImageId: ami-0e731c8a588258d0d
+      SecurityGroups: 
+        - !Ref InstanceSecurityGroup
+      Tags: 
+        - Key: Name # Names the instance
+          Value: testing
+
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
